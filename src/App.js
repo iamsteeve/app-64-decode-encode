@@ -11,7 +11,13 @@ import Grid from '@material-ui/core/Grid';
 import withRoot from './withRoot';
 import base64 from 'base-64';
 import utf8 from 'utf8';
+import CryptoJS from 'crypto-js'
 
+/**
+ *
+ * @param theme
+ * @returns {{root: {flexGrow: number}, fixItem: {padding: number}, rightIcon: {marginLeft: (number|string)}, textField: {marginLeft: (number|string), marginRight: (number|string), width: number}, paper: {padding: number, textAlign: string, color: string}}}
+ */
 const styles = theme => ({
     root: {
         flexGrow: 1
@@ -29,10 +35,15 @@ const styles = theme => ({
         width: 200,
     },
     paper: {
-        padding: theme.spacing.unit * 2,
+        ...theme.mixins.gutters(),
         textAlign: 'center',
+        paddingRight: theme.spacing.unit * 2,
         color: theme.palette.text.secondary,
+        paddingTop: theme.spacing.unit * 2,
+        paddingBottom: theme.spacing.unit * 2,
     },
+
+
 
 });
 
@@ -47,9 +58,51 @@ class App extends React.Component {
         error: false
     };
 
+    encodedWord = (word) => {
+        let wordSecret = "";
+        const wordOfSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+        const arr = word.split('');
+        let newarr = [];
+        for (let i = 0; i < arr.length; i++ ){
+            newarr.push(arr[i]);
+
+            for (let w = 0; w < 7; w++) {
+                wordSecret += wordOfSymbols.charAt(Math.floor(Math.random() * wordOfSymbols.length));
+            }
+
+            let arrSecret = wordSecret.split('');
+            for (let s= 0; s < arrSecret.length; s++){
+                newarr.push(arrSecret[s])
+            }
+            wordSecret = ''
+        }
+        return newarr.join('');
+
+    };
+
+    decodedWord = (word) => {
+        let arr = word.split('');
+        let newArray = [];
+        for (let i = 0; i < arr.length; i++ ){
+            if (i === 0
+                || i === 8
+                || i === 16
+                || i === 24
+                || i === 32
+                || i === 40
+                || i === 48
+                || i === 56  ){
+                newArray.push(arr[i]);
+            }
+        }
+        return newArray.join('')
+    };
+
     handleClick = () => {
         try {
-            const bytes = base64.decode(this.state.textDecoded);
+            const word = this.decodedWord(this.state.textDecoded);
+            const bytes = base64.decode(word);
             const decoded = utf8.decode(bytes);
             this.setState({
                 error: false,
@@ -69,11 +122,12 @@ class App extends React.Component {
             const text = event.target.value;
             const bytes = utf8.encode(text);
             const encoded = base64.encode(bytes);
+            const word = this.encodedWord(encoded)
 
             if (text.length <= 4){
                 this.setState({
                     textEncoded: text,
-                    encode: encoded
+                    encode: `${word}`
                 })
             }
         } catch (e) {
@@ -82,6 +136,17 @@ class App extends React.Component {
                 })
         }
     };
+
+    encodedText64Characters = event => {
+        try {
+            const text = event.target.value;
+
+        } catch (e) {
+
+        }
+    };
+
+
 
     decodedText = event => {
         this.setState({
@@ -98,7 +163,7 @@ class App extends React.Component {
                 <Grid container spacing={24}>
                     <Grid item xs={12}>
                             <Grid container>
-                                <Grid item xs={12} md={6} lg={6} className={classes.fixItem} >
+                                <Grid item xs={12} md={8} lg={6} className={classes.fixItem} >
                                     <Paper className={classes.paper} elevation={4}>
                                         <TextField
                                             id="encoded-input"
@@ -107,19 +172,20 @@ class App extends React.Component {
                                             value={this.state.textEncoded}
                                             onChange={this.encodedText}
                                             margin="normal"
+
                                         />
 
                                         <Typography variant="display3" noWrap>
                                             Texto codificado
                                         </Typography>
-                                        <Typography variant="display1" color="primary">
+                                        <Typography variant={"title"} noWrap component="p" color="primary">
                                             {this.state.encode}
                                         </Typography>
 
                                     </Paper>
                                 </Grid>
 
-                                <Grid item xs={12} md={6} lg={6} className={classes.fixItem}>
+                                <Grid item xs={12} md={4} lg={6} className={classes.fixItem}>
                                     <Paper className={classes.paper} elevation={4}>
                                         <TextField
                                             id="decoded-input"
@@ -141,12 +207,11 @@ class App extends React.Component {
                                             Texto decodificado
                                         </Typography>
 
-                                        {this.state.error? <Typography variant="display1" color='error'>
+                                        {this.state.error? <Typography variant="title"  gutterBottom color='error'>
                                                 Error: {this.state.decoded}
-                                        </Typography>: <Typography variant="display1" color='primary' >
+                                        </Typography>: <Typography variant="title" gutterBottom color='primary' >
                                             {this.state.decoded}
                                         </Typography>}
-
 
 
                                     </Paper>
@@ -159,6 +224,7 @@ class App extends React.Component {
         );
     }
 }
+
 
 App.propTypes = {
     classes: PropTypes.object.isRequired,
