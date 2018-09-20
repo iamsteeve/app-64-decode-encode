@@ -11,13 +11,8 @@ import Grid from '@material-ui/core/Grid';
 import withRoot from './withRoot';
 import base64 from 'base-64';
 import utf8 from 'utf8';
-import CryptoJS from 'crypto-js'
 
-/**
- *
- * @param theme
- * @returns {{root: {flexGrow: number}, fixItem: {padding: number}, rightIcon: {marginLeft: (number|string)}, textField: {marginLeft: (number|string), marginRight: (number|string), width: number}, paper: {padding: number, textAlign: string, color: string}}}
- */
+
 const styles = theme => ({
     root: {
         flexGrow: 1
