@@ -85,14 +85,7 @@ class App extends React.Component {
         let arr = word.split('');
         let newArray = [];
         for (let i = 0; i < arr.length; i++ ){
-            if (i === 0
-                || i === 8
-                || i === 16
-                || i === 24
-                || i === 32
-                || i === 40
-                || i === 48
-                || i === 56  ){
+            if (i % 8 === 0){
                 newArray.push(arr[i]);
             }
         }
@@ -124,12 +117,12 @@ class App extends React.Component {
             const encoded = base64.encode(bytes);
             const word = this.encodedWord(encoded)
 
-            if (text.length <= 4){
+
                 this.setState({
                     textEncoded: text,
                     encode: `${word}`
                 })
-            }
+
         } catch (e) {
                 this.setState({
                     encode: e.message
