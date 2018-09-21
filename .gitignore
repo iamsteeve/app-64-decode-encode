@@ -15,7 +15,12 @@
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Eliminar carpeta .idea de Webstorm
 .idea
+
+# Eliminar el package-lock del repositorio
+package-lock.json
 
 npm-debug.log*
 yarn-debug.log*
