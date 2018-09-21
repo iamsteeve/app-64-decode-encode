@@ -1,19 +1,19 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import {withStyles} from '@material-ui/core/styles';
+import {createStyles, Theme, withStyles} from '@material-ui/core/styles';
 import Icon from '@material-ui/core/Icon';
 
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import withRoot from './withRoot';
-import base64 from 'base-64';
-import utf8 from 'utf8';
+import * as base64 from 'base-64';
+import * as utf8 from 'utf8';
+import {WithStyles} from "@material-ui/core/es";
 
 
-const styles = theme => ({
+const styles = (theme: Theme) => createStyles({
     root: {
         flexGrow: 1
     },
@@ -42,10 +42,27 @@ const styles = theme => ({
 
 });
 
+interface StateApp {
+    encode: string;
+    decoded: string;
+    textEncoded: string;
+    textDecoded: string;
+    error: boolean;
+}
+interface PropsApp extends WithStyles<typeof styles>{
+    classes: {
+        root: string;
+        fixItem: string;
+        rightIcon: string;
+        textField: string;
+        paper: string;
+    };
+}
 
 
-class App extends React.Component {
-    state = {
+
+class App extends React.Component<PropsApp, StateApp> {
+    state: StateApp = {
         encode: '',
         decoded: '',
         textEncoded: '',
@@ -53,11 +70,12 @@ class App extends React.Component {
         error: false
     };
 
-    encodedWord = (word) => {
+    encodedWord = (word: string) => {
         let wordSecret = "";
         const wordOfSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        const arr = word.split('');
+        let arr: Array<string> = [];
+        arr = word.split('');
         let newarr = [];
         for (let i = 0; i < arr.length; i++ ){
             newarr.push(arr[i]);
@@ -76,7 +94,7 @@ class App extends React.Component {
 
     };
 
-    decodedWord = (word) => {
+    decodedWord = (word: string) => {
         let arr = word.split('');
         let newArray = [];
         for (let i = 0; i < arr.length; i++ ){
@@ -105,12 +123,14 @@ class App extends React.Component {
 
     };
 
-    encodedText = event => {
+    encodedText = (event: React.FormEvent<EventTarget>) => {
         try {
-            const text = event.target.value;
+            const target = event.target as HTMLInputElement;
+
+            const text = target.value;
             const bytes = utf8.encode(text);
             const encoded = base64.encode(bytes);
-            const word = this.encodedWord(encoded)
+            const word = this.encodedWord(encoded);
 
 
                 this.setState({
@@ -125,20 +145,14 @@ class App extends React.Component {
         }
     };
 
-    encodedText64Characters = event => {
-        try {
-            const text = event.target.value;
-
-        } catch (e) {
-
-        }
-    };
 
 
 
-    decodedText = event => {
+
+    decodedText = (event: React.FormEvent<EventTarget>) => {
+        const target = event.target as HTMLInputElement;
         this.setState({
-            textDecoded: event.target.value,
+            textDecoded: target.value,
         })
     };
 
@@ -185,7 +199,7 @@ class App extends React.Component {
                                             margin="normal"
                                         />
 
-                                        <Button variant="contained" color="secondary" onClick={this.handleClick} className={classes.button}>
+                                        <Button variant="contained" color="secondary" onClick={this.handleClick} >
                                             Decodificar
                                             <Icon className={classes.rightIcon}>lock_open</Icon>
                                         </Button >
@@ -214,8 +228,6 @@ class App extends React.Component {
 }
 
 
-App.propTypes = {
-    classes: PropTypes.object.isRequired,
-};
+
 
 export default withRoot(withStyles(styles)(App));

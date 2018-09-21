@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
 import pink from '@material-ui/core/colors/pink';
@@ -28,8 +28,8 @@ const theme = createMuiTheme({
     },
 });
 
-function withRoot(Component) {
-    function WithRoot(props) {
+function withRoot<P>(Component: React.ComponentType<P>) {
+    function WithRoot(props: P) {
         // MuiThemeProvider makes the theme available down the React tree
         // thanks to React context.
         return (
