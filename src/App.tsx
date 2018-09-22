@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
@@ -75,6 +76,7 @@ class App extends React.Component<PropsApp, StateApp> {
         const wordOfSymbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         let arr: Array<string> = [];
+        
         arr = word.split('');
         let newarr = [];
         for (let i = 0; i < arr.length; i++ ){
@@ -144,10 +146,6 @@ class App extends React.Component<PropsApp, StateApp> {
                 })
         }
     };
-
-
-
-
 
     decodedText = (event: React.FormEvent<EventTarget>) => {
         const target = event.target as HTMLInputElement;
